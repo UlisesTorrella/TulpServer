@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+<cron>
+<url>/tulpresetdaily</url>
+<description>Reset DailyPoints.</description>
+<schedule>every day 21:50</schedule>
+<timezone>America/Argentina/Cordoba</timezone>
+</cron>
+</cronentries>

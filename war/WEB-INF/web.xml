@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<servlet>
+		<servlet-name>TulpServer</servlet-name>
+		<servlet-class>com.ulises.tulpserver.TulpServerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TulpServer</servlet-name>
+		<url-pattern>/tulpserver</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>TulpAllUsers</servlet-name>
+		<servlet-class>com.ulises.tulpserver.TulpAllUsersServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TulpAllUsers</servlet-name>
+		<url-pattern>/tulpallusers</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>TulpAddUser</servlet-name>
+		<servlet-class>com.ulises.tulpserver.TulpAddUserServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TulpAddUser</servlet-name>
+		<url-pattern>/tulpadduser</url-pattern>
+	</servlet-mapping>
+		<servlet>
+		<servlet-name>TulpResetDailyPoints</servlet-name>
+		<servlet-class>com.ulises.tulpserver.TulpResetDailyPointsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TulpResetDailyPoints</servlet-name>
+		<url-pattern>/tulpresetdaily</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>TulpSearch</servlet-name>
+		<servlet-class>com.ulises.tulpserver.TulpSearchServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TulpSearch</servlet-name>
+		<url-pattern>/tulpsearch</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>TulpFriends</servlet-name>
+		<servlet-class>com.ulises.tulpserver.TulpFriendsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TulpFriends</servlet-name>
+		<url-pattern>/tulpfriends</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	<security-constraint>
+        <web-resource-collection>
+           <web-resource-name>TulpResetDailyPoints</web-resource-name>
+            <url-pattern>/tulpresetdaily/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+</web-app>
