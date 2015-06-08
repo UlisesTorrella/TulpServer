@@ -10,7 +10,6 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Text;
-import com.google.appengine.repackaged.org.codehaus.jackson.util.TextBuffer;
 
 @SuppressWarnings("serial")
 public class TulpServerServlet extends HttpServlet {
@@ -22,8 +21,11 @@ public class TulpServerServlet extends HttpServlet {
 		Key keys = KeyFactory.createKey("User", req.getParameter("user")) ;
 		try {
 			Entity user = datastore.get(keys);
-			
-			resp.getWriter().println(user.getProperty("name")+"-"+user.getProperty("points"));
+			User aux = new User();
+			aux.setName((String) user.getProperty("name"));
+			aux.setMail(user.getKey().getName());
+			aux.setPoints((long) user.getProperty("points"));
+			resp.getWriter().println(aux.toString());
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			resp.getWriter().println("FAIL");

@@ -1,6 +1,7 @@
 package com.ulises.tulpserver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.http.*;
 
@@ -32,15 +33,20 @@ public class TulpFriendsServlet extends HttpServlet {
 		try {
 			user = datastore.get(keyUsuario);
 			String friends = (String) user.getProperty("friends");
-			String parse = "";
+			String[] aux = friends.split("%");
+			ArrayList<User> friendsArray = null;
+			String parse ="";
 			for (Entity result : pq.asIterable()) {
 				
 				if(friends.contains(result.getKey().getName())){
-					parse= parse+ result.getKey().getName()+"#"+result.getProperty("name")+"#"+result.getProperty("points")+"%";
+					User aux1 = new User();
+					aux1.setName((String) result.getProperty("name"));
+					aux1.setMail(result.getKey().getName());
+					aux1.setPoints((long) result.getProperty("points"));
+					parse=parse+aux1.toString()+"{";
 				}
 	
 			 }
-			
 			resp.getWriter().println(parse);
 		} catch (EntityNotFoundException e1) {
 			// TODO Auto-generated catch block
