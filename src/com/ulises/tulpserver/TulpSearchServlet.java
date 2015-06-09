@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
+
+import org.mortbay.log.Log;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -19,6 +23,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
@@ -38,17 +43,27 @@ public class TulpSearchServlet extends HttpServlet {
 		try {
 			Entity busqueda = datastore.get(keyBusqueda);
 			Entity user = datastore.get(keyUsuario);
-			String verificacionRepeticiones= (String )user.getProperty("friends");
-			if(verificacionRepeticiones.contains(req.getParameter("busq"))){
+			String data= (String )user.getProperty("friends");
+			if(data.contains(req.getParameter("busq"))){
 				resp.getWriter().println("Is already your friend");
 			}else{
-				if(user.getProperty("friends")!=null){
-					Text friends = new Text(user.getProperty("friends")+"+"+req.getParameter("busq"));
-					user.setProperty("friends", friends);
+				if(data!=null){
+					if(data!=""){
+						JSONArray friendsArray = new JSONArray(data);					
+						friendsArray.put(req.getParameter("busq"));
+						user.setProperty("friends", friendsArray.toString());
+					}
+					else{
+						JSONArray friendsArray = new JSONArray();					
+						friendsArray.put(req.getParameter("busq"));
+						user.setProperty("friends", friendsArray.toString());
+					}
+
 				}
 				else{
 					user.setProperty("friends", req.getParameter("busq"));
 				}
+				
 				datastore.put(user);
 				resp.getWriter().println("New Friend Successfully Added... Wiiii");
 			}
@@ -56,6 +71,9 @@ public class TulpSearchServlet extends HttpServlet {
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			resp.getWriter().println("Gmail Account Doesn't Found");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			resp.getWriter().println(e.getMessage());
 		}
 	}
 }

@@ -23,35 +23,34 @@ public class TulpFriendsServlet extends HttpServlet {
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-		Query q = new Query("User");
-		PreparedQuery pq = datastore.prepare(q);
-
 		JSONArray a = new JSONArray();
 		
 		Key keyUsuario = KeyFactory.createKey("User", req.getParameter("user"));
 		Entity user;
 		try {
 			user = datastore.get(keyUsuario);
-			String friends = (String) user.getProperty("friends");
-			String[] aux = friends.split("%");
+			String friendsString = (String)user.getProperty("friends");
+			JSONArray friendsArray = new JSONArray(friendsString);
 			//ArrayList<User> friendsArray = null;
 			JSONArray userarray= new JSONArray();
 			//String parse ="";
-			for (Entity result : pq.asIterable()) {
-				
-				if(friends.contains(result.getKey().getName())){
-					User aux1 = new User();
-					aux1.setName((String) result.getProperty("name"));
-					aux1.setMail(result.getKey().getName());
-					aux1.setPoints((long) result.getProperty("points"));
-					userarray.put(aux1.toString());
-				}
+			for (int i =0;i<friendsArray.length();i++) {
+				Key auxKey = KeyFactory.createKey("User", (String)friendsArray.get(i));
+				Entity auxEntity = datastore.get(auxKey);
+				User aux1 = new User();
+				aux1.setName((String) auxEntity.getProperty("name"));
+				aux1.setMail(auxEntity.getKey().getName());
+				aux1.setPoints((long) auxEntity.getProperty("points"));
+				userarray.put(aux1.toString());
 	
 			 }
 			resp.getWriter().println(userarray.toString());
 		} catch (EntityNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 
