@@ -34,8 +34,9 @@ public class TulpFriendsServlet extends HttpServlet {
 			user = datastore.get(keyUsuario);
 			String friends = (String) user.getProperty("friends");
 			String[] aux = friends.split("%");
-			ArrayList<User> friendsArray = null;
-			String parse ="";
+			//ArrayList<User> friendsArray = null;
+			JSONArray userarray= new JSONArray();
+			//String parse ="";
 			for (Entity result : pq.asIterable()) {
 				
 				if(friends.contains(result.getKey().getName())){
@@ -43,11 +44,11 @@ public class TulpFriendsServlet extends HttpServlet {
 					aux1.setName((String) result.getProperty("name"));
 					aux1.setMail(result.getKey().getName());
 					aux1.setPoints((long) result.getProperty("points"));
-					parse=parse+aux1.toString()+"{";
+					userarray.put(aux1.toString());
 				}
 	
 			 }
-			resp.getWriter().println(parse);
+			resp.getWriter().println(userarray.toString());
 		} catch (EntityNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
