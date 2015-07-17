@@ -1,19 +1,15 @@
 package com.ulises.tulpserver;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.http.*;
 
-import com.google.appengine.api.datastore.DataTypeUtils;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.labs.repackaged.org.json.*;
 
 @SuppressWarnings("serial")
@@ -21,10 +17,7 @@ public class TulpFriendsServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.setContentType("text/plain");
 		
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-		JSONArray a = new JSONArray();
-		
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();		
 		Key keyUsuario = KeyFactory.createKey("User", req.getParameter("user"));
 		Entity user;
 		try {

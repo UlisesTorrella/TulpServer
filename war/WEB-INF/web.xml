@@ -13,6 +13,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/tulpserver</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>Session</servlet-name>
+		<servlet-class>com.ulises.tulpserver.SessionServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Session</servlet-name>
+		<url-pattern>/session</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>TulpAllUsers</servlet-name>
 		<servlet-class>com.ulises.tulpserver.TulpAllUsersServlet</servlet-class>
 	</servlet>
@@ -63,6 +71,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         </web-resource-collection>
         <auth-constraint>
             <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
         </auth-constraint>
     </security-constraint>
 </web-app>

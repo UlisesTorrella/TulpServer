@@ -9,7 +9,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Text;
 
 @SuppressWarnings("serial")
 public class TulpServerServlet extends HttpServlet {
@@ -28,7 +27,7 @@ public class TulpServerServlet extends HttpServlet {
 			resp.getWriter().println(aux.toString());
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
-			resp.getWriter().println("FAIL");
+			resp.getWriter().print("FAIL");
 		}	
 	}
 	
@@ -48,7 +47,7 @@ public class TulpServerServlet extends HttpServlet {
 
 				emitente.setProperty("toGive", (Long)emitente.getProperty("toGive")-Integer.parseInt(req.getParameter("addPoints")));
 				datastore.put(emitente);
-				resp.getWriter().println("Enviado");
+				resp.getWriter().println("Send");
 			}
 			else{
 				resp.getWriter().println("Not enough points");

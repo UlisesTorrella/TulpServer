@@ -7,25 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
-
-
-
-
-import org.mortbay.log.Log;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Text;
 import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class TulpSearchServlet extends HttpServlet {
@@ -38,10 +27,8 @@ public class TulpSearchServlet extends HttpServlet {
 		
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Key keyBusqueda = KeyFactory.createKey("User", req.getParameter("busq"));
 		Key keyUsuario = KeyFactory.createKey("User", req.getParameter("user"));
 		try {
-			Entity busqueda = datastore.get(keyBusqueda);
 			Entity user = datastore.get(keyUsuario);
 			String data= (String )user.getProperty("friends");
 			if(data.contains(req.getParameter("busq"))){
@@ -60,10 +47,6 @@ public class TulpSearchServlet extends HttpServlet {
 					}
 
 				}
-				else{
-					user.setProperty("friends", req.getParameter("busq"));
-				}
-				
 				datastore.put(user);
 				resp.getWriter().println("New Friend Successfully Added... Wiiii");
 			}

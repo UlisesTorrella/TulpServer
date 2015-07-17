@@ -1,42 +1,283 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
-<!-- above set at the top of the file will set     -->
-<!-- the browser's rendering engine into           -->
-<!-- "Quirks Mode". Replacing this declaration     -->
-<!-- with a "Standards Mode" doctype is supported, -->
-<!-- but may lead to some differences in layout.   -->
+<!DOCTYPE html>
+<html lang="en">
 
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Hello App Engine</title>
-  </head>
+<head>
 
-  <body>
-    <h1>Hello App Engine!</h1>
-	
-    <table>
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Available Servlets:</td>        
-      </tr>
-      <tr>
-        <td><a href="tulpserver">TulpServer</a></td>
-      </tr>
-      <tr>
-        <td><a href="tulpallusers">TulpAllUser</a></td>
-      </tr>
-      <tr>
-        <td><a href="tulpadduser">TulpAddUser</a></td>
-      </tr>
-      <tr>
-        <td><a href="tulpresetdaily">TulpResetDailyPoints</a></td>
-      </tr>
-      <tr>
-        <td><a href="tulpsearch">TulpSearch</a></td>
-      </tr>
-      <tr>
-        <td><a href="tulpfriends">TulpFriends</a></td>
-      </tr>
-    </table>
-  </body>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Tulp</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/one-page-wonder.css" rel="stylesheet">
+    
+    
+    
+
+</head>
+
+<body>
+    <div ng-app="myApp" ng-controller="myCtrl">
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">{{name}}</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#friends">Friends</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a>{{email}}</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+        <toaster-container></toaster-container>
+    <!-- Full Width Image Header -->
+    <header class="header-image">
+        <div class="headline">
+            <div class="container">
+                <div class="circulo"></div>
+                <p class='importante' id='categoria'>{{name}}</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="container" >
+
+        <hr class="featurette-divider">
+
+        <!-- First Featurette -->
+        <div class="featurette" id="friends">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Points</th>
+                    <th>Email</th>
+                    <th>Give</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in friends" >
+                        <div class="input-group">
+                          <input type="text" class="form-control" placeholder="Add friend by email" ng-model="busqEmail">
+                          <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" ng-click="addFriend()" >Add</button>
+                          </span>
+                        </div>
+                    </tr>
+                    <tr ng-repeat="x in friends" >
+                        <td>{{x.split("#")[0]}}</td>
+                        <td>{{x.split("#")[1]}}</td>
+                        <td>{{x.split("#")[2]}}</td>
+                        <td>
+                        <div class="input-group"  style="width: 300px; margin-left: 0px;">
+                          <span class="input-group-btn">
+                              <button type="button" class="btn btn-danger btn-number"  data-type="minus" data-field="quant[2]" ng-click="subtractPoints($index)">
+                                <span class="glyphicon glyphicon-minus"></span>
+                              </button>
+                          </span>
+                          <input type="text" name="quant[2]" class="form-control input-number"  min="1" ng-model="auxFriends[$index]" max="10">
+                          <span class="input-group-btn">
+                              <button type="button" class="btn btn-success btn-number" data-type="plus" ng-click="addPoints($index)" data-field="quant[2]">
+                                  <span class="glyphicon glyphicon-plus"></span>
+                              </button>
+                          </span>
+                               
+                        <span class="input-group-btn">
+                            <button type="button" ng-click="sendPoints($index)" class="btn btn-success">Give</button>
+                          </span>
+                        </div>
+                        </td>
+                    </tr>
+                </tbody>    
+            </table>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Tulp</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    </div>
+    <!-- /.container -->
+    
+    <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    
+    <script src="js/circle-progress.js"></script>
+    <script>
+        var url = "http://tulp-project.appspot.com/";
+
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope, $http,$location) {
+            var email = "test@example.com";
+            var name = "";
+            var puntos = 0;
+            var friends = "";
+            $http.get(url+'session').
+              success(function(data, status, headers, config) {
+                email = data;
+                $scope.email = email;
+                
+                
+                
+                $http.get(url+"tulpserver?user="+email).
+                  success(function(data, status, headers, config) {
+                    if(data!="FAIL"){
+                        puntos =data.split("#")[1];
+                        name = data.split("#")[0];
+                        $scope.name = name;
+                        $scope.puntos = puntos;
+                        setCircle(puntos);
+                        setByPoints(puntos);
+
+                        loadFriends();
+
+                        }
+                    else{
+                        window.location = url+"singup.html"
+                        
+                    }
+                  }).
+                  error(function(data, status, headers, config) {
+                  });
+                  }).
+              error(function(data, status, headers, config) {
+              });
+            
+            $scope.addFriend = function(){
+                $http.post(url+"tulpsearch?user="+email+"&busq="+$scope.busqEmail).
+                      success(function(data, status, headers, config) {
+                        loadFriends();
+                    $scope.busqEmail = "";
+                      }).
+                      error(function(data, status, headers, config) {
+                      });
+            };
+            
+            function loadFriends(){
+                $http.get(url+"tulpfriends?user="+email).
+                          success(function(data, status, headers, config) {   
+                            friends = data;
+                            $scope.friends = friends;
+                            $scope.auxFriends= angular.copy($scope.friends);
+                            $scope.auxFriends = emptyArray($scope.auxFriends);
+
+                          }).
+                          error(function(data, status, headers, config) {
+                          });
+            }
+            
+            
+            $scope.addPoints = function(idx){
+                if($scope.auxFriends[idx]<10){
+                    $scope.auxFriends[idx] +=1;
+                }
+                
+            }
+            
+            $scope.subtractPoints = function(idx){
+                if($scope.auxFriends[idx]+=0){
+                    $scope.auxFriends[idx] -=1;
+                }
+            }
+            $scope.sendPoints = function(idx){
+                $http.post(url+"tulpserver?user="+$scope.friends[idx].split("#")[2]+"&emitente="+$scope.email+"&addPoints="+$scope.auxFriends[idx]).
+                      success(function(data, status, headers, config) {
+                        loadFriends();
+                      }).
+                      error(function(data, status, headers, config) {
+                      });
+            }
+            
+            
+            
+        });
+            
+        //Funcion para vaciar el array de amigos y poner 0 en cada columna y asi manejar los puntos antes de ser mandados
+        function emptyArray(list){
+            for (i = 0; i < list.length; i++) { 
+                list[i] = 0;
+            }
+            return list;
+        }
+        
+        
+        
+        function setByPoints(puntos){
+            if(puntos<100){
+ 			    $('.header-image').css({'background' : 'url(css/img/pebete.jpg)'});//pebete
+                setCircle(puntos);
+                $('#categoria').text("Pebete  "+ puntos.toString() + "pts" );
+ 		     }
+ 		     else{
+                if(puntos<200){
+                    $('.header-image').css({'background' : 'url(css/img/mostro.jpg)'});//mostro
+                    setCircle(puntos-100);
+                    $('#categoria').text("Mostro  "+ puntos.toString() + "pts" );
+                }
+                else{
+                    if(puntos<300){
+                        $('.header-image').css({'background' : 'url(css/img/maquinola.jpg)'});//Maquinola
+                        setCircle(puntos-200);
+                        $('#categoria').text("Maquinola  "+ puntos.toString() + "pts" );
+                    }
+                    else{
+                        if(puntos<400){
+                            $('.header-image').css({'background' : 'url(css/img/troesma.jpg)'});//Troesma
+                            setCircle(puntos-300);
+                            $('#categoria').text("Troesma  "+ puntos.toString() + "pts" );
+                        }
+                        else{
+                            if(puntos>=400){
+                                $('.header-image').css({'background' : 'url(css/img/lince.jpg)'});//Lince
+                                $('#categoria').text("Lince   "+ puntos+ " pts");
+                                $('#categoria').css({'font-size':'100px'});
+                            }
+                        }
+                    }
+ 			    }
+            }
+        }
+        
+        function setCircle(num){
+            $('.circulo').circleProgress({value: num/100,fill: {gradient: ['#000000', '#000000']},startAngle: -1.6,thickness: 20});
+        }
+    </script>
+
+</body>
+
 </html>
