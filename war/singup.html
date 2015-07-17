@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Tulp</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/one-page-wonder.css" rel="stylesheet">
+    
+
+</head>
+
+<body>
+
+    <div class="container" ng-app="singInApp" ng-controller="myCtrl">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign up</h2>
+        <label for="inputName" class="sr-only" ng-model="name">Name</label>
+        <input type="text" id="inputName" ng-model="name" class="form-control" placeholder="Name" required="" autofocus="">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="singUp()">Sign up</button>
+      </form>
+
+    </div>
+    
+    
+    <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    
+    <script src="js/circle-progress.js"></script>
+    
+    <script>
+        var url = "http://tulp-project.appspot.com/";
+
+        
+        var app = angular.module('singInApp', []);
+        app.controller('myCtrl', function($scope, $http, $location) {
+            $http.get(url+'session').
+              success(function(data, status, headers, config) {
+                var email = data;
+                $scope.email = email;
+                $scope.singUp = function(){
+                    if($scope.name != ""){
+                        $http.post(url+"tulpadduser?mail="+email+"&name="+$scope.name).
+                          success(function(data, status, headers, config) {
+                            window.location = url;
+                          }).
+                          error(function(data, status, headers, config) {
+                          });
+                    }
+                    else{}
+                };
+            
+            }).
+            error(function(data, status, headers, config) {
+            });
+        });
+    </script>
+
+</body>
+
+</html>
