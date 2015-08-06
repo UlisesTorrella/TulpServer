@@ -7,12 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 
@@ -25,12 +29,20 @@ public class TulpSearchServlet extends HttpServlet {
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
 		
-		
+		UserService userService=UserServiceFactory.getUserService();
+		com.google.appengine.api.users.User googleuser=userService.getCurrentUser();
+		String username= googleuser.getEmail();
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Key keyUsuario = KeyFactory.createKey("User", req.getParameter("user"));
+		Key keyUsuario = KeyFactory.createKey("User", username);
+		Key keyBusq = KeyFactory.createKey("User", req.getParameter("busq"));
 		try {
 			Entity user = datastore.get(keyUsuario);
+			Entity buscado = datastore.get(keyBusq);
 			String data= (String )user.getProperty("friends");
+			if(req.getParameter("busq")==username){
+				resp.getWriter().println("You are not your friend");
+			}
+			else{
 			if(data.contains(req.getParameter("busq"))){
 				resp.getWriter().println("Is already your friend");
 			}else{
@@ -47,8 +59,12 @@ public class TulpSearchServlet extends HttpServlet {
 					}
 
 				}
+				user.setProperty("points", (Long)user.getProperty("points")+1);
+				buscado.setProperty("points", (Long)buscado.getProperty("points")+2);
+				datastore.put(buscado);
 				datastore.put(user);
 				resp.getWriter().println("New Friend Successfully Added... Wiiii");
+			}
 			}
 
 		} catch (EntityNotFoundException e) {

@@ -21,12 +21,13 @@
     <div class="container" ng-app="singInApp" ng-controller="myCtrl">
 
       <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign up</h2>
-        <label for="inputName" class="sr-only" ng-model="name">Name</label>
+        <h2 class="form-signin-heading">Regístrese</h2>
+        <label for="inputName" class="sr-only" ng-model="name">Nombre</label>
         <input type="text" id="inputName" ng-model="name" class="form-control" placeholder="Name" required="" autofocus="">
+        <input type="text" id="inputName" ng-model="friend" class="form-control" placeholder="Your friend email (Optional)" required="" >
         <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="singUp()">Sign up</button>
       </form>
-
+        If you include a friend email he will get 10 additional tulpoints and you 5.
     </div>
     
     
@@ -52,7 +53,7 @@
                 $scope.email = email;
                 $scope.singUp = function(){
                     if($scope.name != ""){
-                        $http.post(url+"tulpadduser?mail="+email+"&name="+$scope.name).
+                        $http.post(url+"tulpadduser?name="+$scope.name+"&friend="+$scope.friend).
                           success(function(data, status, headers, config) {
                             window.location = url;
                           }).

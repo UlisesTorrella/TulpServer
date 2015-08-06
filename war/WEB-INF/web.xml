@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://java.sun.com/xml/ns/javaee"
-xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	<servlet>
 		<servlet-name>TulpServer</servlet-name>
 		<servlet-class>com.ulises.tulpserver.TulpServerServlet</servlet-class>
@@ -19,6 +14,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>Session</servlet-name>
 		<url-pattern>/session</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>TulpNotificaciones</servlet-name>
+		<servlet-class>com.ulises.tulpserver.TulpNotificacionesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TulpNotificaciones</servlet-name>
+		<url-pattern>/tulpnotificaciones</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>TulpAllUsers</servlet-name>
@@ -82,4 +85,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
             <role-name>*</role-name>
         </auth-constraint>
     </security-constraint>
+    
+
+ <servlet>
+  <servlet-name>SystemServiceServlet</servlet-name>
+  <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+  <init-param>
+   <param-name>services</param-name>
+   <param-value>com.ulises.tulpserver.TulpServerServlet</param-value>
+  </init-param>
+ </servlet>
+ <servlet-mapping>
+  <servlet-name>SystemServiceServlet</servlet-name>
+  <url-pattern>/_ah/spi/*</url-pattern>
+ </servlet-mapping>
 </web-app>

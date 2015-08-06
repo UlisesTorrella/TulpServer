@@ -12,14 +12,14 @@
     <title>Tulp</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/one-page-wonder.css" rel="stylesheet">
-    
-    
+    <link href="css/ngToast.min.css" rel="stylesheet">
+    <link href="css/ngToast-animations.min.css" rel="stylesheet">
     
 
 </head>
 
 <body>
-    <div ng-app="myApp" ng-controller="myCtrl">
+    <div ng-app="myApp" ng-controller="myCtrl" ng-cloak>
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -31,33 +31,36 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">{{name}}</a>
+                <a class="navbar-brand" href="#" ng-show="loading" ng-cloak>{{name}}</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#friends">Friends</a>
+                        <a onclick="mover()" >Friends</a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a>{{email}}</a>
+                        <a ng-show="loading" ng-cloak>{{email}}</a>
                     </li>
                 </ul>
             </div>
             
             <!-- /.navbar-collapse -->
         </div>
+        
         <!-- /.container -->
     </nav>
-        <toaster-container></toaster-container>
+        
+        
+    <toast></toast>
     <!-- Full Width Image Header -->
-    <header class="header-image">
+    <header class="header-image" style="background:{{imagen}}">
         <div class="headline">
-            <div class="container">
+            <div class="container" id="perfil" style="{{profilePossition}}">
                 <div class="circulo"></div>
-                <p class='importante' id='categoria'>{{name}}</p>
+                <p class='importante' id='categoria' ng-show="loading" ng-cloak>{{perfil}}</p>
             </div>
         </div>
     </header>
@@ -66,9 +69,8 @@
     <div class="container" >
 
         <hr class="featurette-divider">
-
         <!-- First Featurette -->
-        <div class="featurette" id="friends">
+        <div class="featurette" id="/friends">
             <table class="table">
                 <thead>
                   <tr>
@@ -115,7 +117,7 @@
             </table>
         </div>
 
-        <hr class="featurette-divider">
+        '<hr class="featurette-divider">
 
         <!-- Footer -->
         <footer>
@@ -136,24 +138,25 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-    
     <script src="js/circle-progress.js"></script>
+    <script src="js/bootstrap-waitingfor.js"></script>
+    <script src="js/ngToast.min.js"></script>
+    <script src="js/angular-sanitize.js"></script>
     <script>
         var url = "http://tulp-project.appspot.com/";
 
-        var app = angular.module('myApp', []);
-        app.controller('myCtrl', function($scope, $http,$location) {
+        var app = angular.module('myApp', ['ngToast']);
+        app.controller('myCtrl', function($scope, $http,$location,ngToast) {
             var email = "test@example.com";
             var name = "";
             var puntos = 0;
             var friends = "";
+            $scope.loading = false;
+            waitingDialog.show();
             $http.get(url+'session').
               success(function(data, status, headers, config) {
                 email = data;
-                $scope.email = email;
-                
-                
-                
+                $scope.email = email;       
                 $http.get(url+"tulpserver?user="+email).
                   success(function(data, status, headers, config) {
                     if(data!="FAIL"){
@@ -163,12 +166,21 @@
                         $scope.puntos = puntos;
                         setCircle(puntos);
                         setByPoints(puntos);
-
+                        waitingDialog.hide();
+                        $scope.loading = true;
                         loadFriends();
-
-                        }
+                        $http.get(url+"tulpnotificaciones?user="+email).
+                        success(function(data, status, headers, config) {
+                            if(data!="null"){
+                                for(i = 0; i < data.length; i++){
+                                ngToast.create(data[i]);
+                            }
+                            }
+                            }).error(function(data, status, headers, config) {
+                        });
+                    }
                     else{
-                        window.location = url+"singup.html"
+                        window.location = url+"presentation.html"
                         
                     }
                   }).
@@ -179,14 +191,30 @@
               });
             
             $scope.addFriend = function(){
-                $http.post(url+"tulpsearch?user="+email+"&busq="+$scope.busqEmail).
+                $http.post(url+"tulpsearch?busq="+$scope.busqEmail).
                       success(function(data, status, headers, config) {
+                        ngToast.create(data);
                         loadFriends();
+                        loadPoints();
                     $scope.busqEmail = "";
                       }).
                       error(function(data, status, headers, config) {
                       });
             };
+            
+            function loadPoints(){
+                $http.get(url+"tulpserver?user="+email).
+                  success(function(data, status, headers, config) {
+                    if(data!="FAIL"){
+                        puntos =data.split("#")[1];
+                        name = data.split("#")[0];
+                        $scope.name = name;
+                        $scope.puntos = puntos;
+                        setCircle(puntos);
+                        setByPoints(puntos);
+                    }
+                  });
+            }
             
             function loadFriends(){
                 $http.get(url+"tulpfriends?user="+email).
@@ -214,16 +242,55 @@
                     $scope.auxFriends[idx] -=1;
                 }
             }
+            
             $scope.sendPoints = function(idx){
-                $http.post(url+"tulpserver?user="+$scope.friends[idx].split("#")[2]+"&emitente="+$scope.email+"&addPoints="+$scope.auxFriends[idx]).
+                $http.post(url+"tulpserver?user="+$scope.friends[idx].split("#")[2]+"&addPoints="+$scope.auxFriends[idx]).
                       success(function(data, status, headers, config) {
                         loadFriends();
+                        ngToast.create(data);
                       }).
                       error(function(data, status, headers, config) {
                       });
             }
             
-            
+            function setByPoints(puntos){
+                if(puntos<100){
+                    $scope.imagen= 'url(css/img/mostro.jpg)';
+                    setCircle(puntos,0);
+                    $scope.perfil = "Mostro  "+ puntos.toString() + "pts" ;
+                    $scope.profilePossition = "margin-right:-20%;";
+                 }
+                 else{
+                    if(puntos<200){
+                        $scope.imagen= 'url(css/img/maquinola.jpg)';
+                        setCircle(puntos,100);
+                        $scope.perfil = "Maquinola  "+ puntos.toString() + "pts" ;
+                        $scope.profilePossition = "margin-right:-5%;";
+                    }
+                    else{
+                        if(puntos<300){
+                            $scope.imagen= 'url(css/img/titan.jpg)';
+                            setCircle(puntos,200);
+                            $scope.perfil = "Titan  "+ puntos.toString() + "pts" ;
+                            $scope.profilePossition = "margin-right:30%;";
+                        }
+                        else{
+                            if(puntos<400){
+                                $scope.imagen= 'url(css/img/troesma.jpg)';
+                                setCircle(puntos,300);
+                                $scope.perfil = "Troesma  "+ puntos.toString() + "pts" ;
+                                $scope.profilePossition = "margin-right:-10%;";
+                            }
+                            else{
+                                if(puntos>=400){
+                                    $scope.imagen= 'url(css/img/lince.jpg)';
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                }
             
         });
             
@@ -237,44 +304,15 @@
         
         
         
-        function setByPoints(puntos){
-            if(puntos<100){
- 			    $('.header-image').css({'background' : 'url(css/img/pebete.jpg)'});//pebete
-                setCircle(puntos);
-                $('#categoria').text("Pebete  "+ puntos.toString() + "pts" );
- 		     }
- 		     else{
-                if(puntos<200){
-                    $('.header-image').css({'background' : 'url(css/img/mostro.jpg)'});//mostro
-                    setCircle(puntos-100);
-                    $('#categoria').text("Mostro  "+ puntos.toString() + "pts" );
-                }
-                else{
-                    if(puntos<300){
-                        $('.header-image').css({'background' : 'url(css/img/maquinola.jpg)'});//Maquinola
-                        setCircle(puntos-200);
-                        $('#categoria').text("Maquinola  "+ puntos.toString() + "pts" );
-                    }
-                    else{
-                        if(puntos<400){
-                            $('.header-image').css({'background' : 'url(css/img/troesma.jpg)'});//Troesma
-                            setCircle(puntos-300);
-                            $('#categoria').text("Troesma  "+ puntos.toString() + "pts" );
-                        }
-                        else{
-                            if(puntos>=400){
-                                $('.header-image').css({'background' : 'url(css/img/lince.jpg)'});//Lince
-                                $('#categoria').text("Lince   "+ puntos+ " pts");
-                                $('#categoria').css({'font-size':'100px'});
-                            }
-                        }
-                    }
- 			    }
-            }
+        
+        
+        function setCircle(num, resta){
+            puntos=num-resta;
+            $('.circulo').circleProgress({value: puntos/100,fill: {gradient: ['#000000', '#000000']},startAngle: -1.6,thickness: 20});
         }
         
-        function setCircle(num){
-            $('.circulo').circleProgress({value: num/100,fill: {gradient: ['#000000', '#000000']},startAngle: -1.6,thickness: 20});
+        function mover(){
+            window.location.href = '#friends';
         }
     </script>
 
